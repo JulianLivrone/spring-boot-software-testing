@@ -1,21 +1,28 @@
 package com.amigoscode.testing.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
+@JsonIgnoreProperties(value = {"id"}, allowGetters = true) // This will ignore anything coming from the client, but when we send the payload to the client we will include the id.
 public class Customer {
 
     @Id
     private UUID id;
 
     @NotBlank
+    @Column(nullable = false)
     private String name;
 
     @NotBlank
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
     public Customer(UUID id, String name, String phoneNumber) {
@@ -49,18 +56,5 @@ public class Customer {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return Objects.equals(id, customer.id) && Objects.equals(name, customer.name) && Objects.equals(phoneNumber, customer.phoneNumber);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, phoneNumber);
     }
 }
